@@ -62,6 +62,7 @@ class TemperatureEditorView(
             style = Paint.Style.STROKE
             strokeWidth = 25F
             isAntiAlias = true
+            strokeCap = Paint.Cap.ROUND
 
             val matrix = Matrix().apply {
                 setRotate(45F, 500F, 500F)
