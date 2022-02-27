@@ -13,21 +13,18 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
 
-        <item name="temperatureEditorStyle">@style/DefaultTemperatureEditorStyle</item>
+        <item name="temperatureEditorStyle">@style/defaultTemperatureEditorStyle</item>
     </style>
 
-    <style name="DefaultTemperatureEditorStyle">
-        <item name="background">#7A7A7A</item>
-        <item name="background_centre_start">#969696</item>
-        <item name="background_centre_end">#333333</item>
-        <item name="background_progress_start">#BF4300</item>
-        <item name="background_progress_end">#DF6B2D</item>
+    <style name="defaultTemperatureEditorStyle">
+        <item name="background_circle">#3d3d3d</item>
+        <item name="background_centre_start">@color/black</item>
+        <item name="background_centre_end">#505151</item>
+        <item name="background_progress_end">#eb8b52</item>
+        <item name="background_progress_start">#ee4d4b</item>
     </style>
 
-    <style name="BlueTemperatureEditorStyle">
-        <item name="background">#7A7A7A</item>
-        <item name="background_centre_start">#969696</item>
-        <item name="background_centre_end">#333333</item>
+    <style name="BlueTemperatureEditorStyle" parent="defaultTemperatureEditorStyle">
         <item name="background_progress_start">@color/purple_700</item>
         <item name="background_progress_end">@color/purple_500</item>
     </style>

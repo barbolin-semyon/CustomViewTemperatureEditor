@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="temperatureEditorView">
-        <attr name="background" format="color"/>
+        <attr name="background_circle" format="color"/>
         <attr name="background_progress_start" format="color"/>
         <attr name="background_progress_end" format="color"/>
         <attr name="background_centre_start" format="color" />
