@@ -3,6 +3,7 @@ package com.example.customviewtemperatureeditor
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
@@ -35,6 +36,9 @@ class TemperatureEditorView(
     private lateinit var paintBackground: Paint
     private lateinit var paintBackgroundCenter: Paint
     private lateinit var paintProgress: Paint
+    private lateinit var paintSlider: Paint
+
+    private val reactProgress = RectF(300f, 300f, 700f, 700f)
 
     private var colorBackgroundCircle: Int = DEFAULT_COLOR_BACKGROUND
     private var colorBackgroundCenterStart = DEFAULT_COLOR_BACKGROUND_CENTRE_START
@@ -50,6 +54,7 @@ class TemperatureEditorView(
         }
         initPaintProgress()
         initPaintBackgroundCenter()
+        initPaintSlider()
     }
 
     private fun initPaintProgress() {
@@ -95,11 +100,21 @@ class TemperatureEditorView(
         }
     }
 
+    private fun initPaintSlider() {
+        paintSlider = Paint().apply {
+            strokeCap = Paint.Cap.ROUND
+            color = colorSlider
+            style = Paint.Style.STROKE
+            strokeWidth = 60f
+        }
+    }
+
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         canvas!!.drawCircle(500f, 500f, 240f, paintBackground)
         canvas.drawCircle(500f, 500f, 187f, paintBackgroundCenter)
-        canvas.drawArc(RectF(300f, 300f, 700f, 700f), 0f, 270f, false, paintProgress)
+        canvas.drawArc(reactProgress, 0f, 270f, false, paintProgress)
+        canvas.drawArc(reactProgress, 270f, 2f, false, paintSlider)
     }
 
     @SuppressLint("CustomViewStyleable")
