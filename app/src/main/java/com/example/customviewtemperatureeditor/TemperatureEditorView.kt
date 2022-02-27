@@ -49,7 +49,7 @@ class TemperatureEditorView(
 
     @SuppressLint("ResourceAsColor")
     private fun initPaint() {
-        paintBackground = Paint().apply {
+        paintBackground = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = colorBackgroundCircle
         }
         initPaintProgress()
@@ -58,10 +58,9 @@ class TemperatureEditorView(
     }
 
     private fun initPaintProgress() {
-        paintProgress = Paint().apply {
+        paintProgress = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             style = Paint.Style.STROKE
             strokeWidth = 25F
-            isAntiAlias = true
             strokeCap = Paint.Cap.ROUND
 
             val matrix = Matrix().apply {
@@ -96,13 +95,13 @@ class TemperatureEditorView(
             null
         ).apply { setLocalMatrix(matrix) }
 
-        paintBackgroundCenter = Paint().apply {
+        paintBackgroundCenter = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             shader = gradient
         }
     }
 
     private fun initPaintSlider() {
-        paintSlider = Paint().apply {
+        paintSlider = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             strokeCap = Paint.Cap.ROUND
             color = colorSlider
             style = Paint.Style.STROKE
@@ -115,7 +114,7 @@ class TemperatureEditorView(
         canvas!!.drawCircle(500f, 500f, 240f, paintBackground)
         canvas.drawCircle(500f, 500f, 187f, paintBackgroundCenter)
         canvas.drawArc(reactProgress, 0f, 270f, false, paintProgress)
-        canvas.drawArc(reactProgress, 270f, 2f, false, paintSlider)
+        canvas.drawArc(reactProgress, 270f, 1.7f, false, paintSlider)
     }
 
     @SuppressLint("CustomViewStyleable")
