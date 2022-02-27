@@ -23,6 +23,7 @@
         <item name="background_centre_end">@color/gray200</item>
         <item name="background_progress_end">@color/orange_500</item>
         <item name="background_progress_start">@color/orange_700</item>
+        <item name="background_slider">@color/gray700</item>
     </style>
 
     <style name="BlueTemperatureEditorStyle" parent="defaultTemperatureEditorStyle">

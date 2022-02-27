@@ -41,6 +41,7 @@ class TemperatureEditorView(
     private var colorBackgroundCenterEnd = DEFAULT_COLOR_BACKGROUND_CENTRE_END
     private var colorProgressStart = DEFAULT_COLOR_PROGRESS_START
     private var colorProgressEnd = DEFAULT_COLOR_PROGRESS_END
+    private var colorSlider = DEFAULT_COLOR_SLIDER
 
     @SuppressLint("ResourceAsColor")
     private fun initPaint() {
@@ -94,7 +95,6 @@ class TemperatureEditorView(
         }
     }
 
-
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         canvas!!.drawCircle(500f, 500f, 240f, paintBackground)
@@ -132,6 +132,10 @@ class TemperatureEditorView(
             DEFAULT_COLOR_PROGRESS_END
         )
 
+        colorSlider = typedArray.getColor(
+            R.styleable.temperatureEditorView_background_slider,
+            DEFAULT_COLOR_SLIDER
+        )
 
         typedArray.recycle()
     }
@@ -142,6 +146,7 @@ class TemperatureEditorView(
         const val DEFAULT_COLOR_BACKGROUND_CENTRE_END = Color.GRAY
         const val DEFAULT_COLOR_PROGRESS_START = Color.BLUE
         const val DEFAULT_COLOR_PROGRESS_END = Color.CYAN
+        const val DEFAULT_COLOR_SLIDER = Color.BLACK
     }
 
 }

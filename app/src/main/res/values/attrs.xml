@@ -6,6 +6,7 @@
         <attr name="background_progress_end" format="color"/>
         <attr name="background_centre_start" format="color" />
         <attr name="background_centre_end" format="color" />
+        <attr name="background_slider" format="color"/>
     </declare-styleable>
 
     <attr name="temperatureEditorStyle" format="reference"/>
