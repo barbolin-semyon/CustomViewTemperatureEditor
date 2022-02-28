@@ -4,7 +4,16 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.Log
+import android.view.MotionEvent
 import android.view.View
+import android.widget.Toast
+import java.lang.Math.abs
+import java.lang.Math.sin
+import kotlin.math.asin
+import kotlin.math.pow
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 class TemperatureEditorView(
     context: Context,
@@ -46,7 +55,19 @@ class TemperatureEditorView(
     private var colorProgressEnd = DEFAULT_COLOR_PROGRESS_END
     private var colorSlider = DEFAULT_COLOR_SLIDER
 
+
+    private var currentY = 0f
+    private var currentX = 0f
     private var progress = 0f
+        set(value) {
+
+            val deltaY = sin(progress) * innerRadius
+            val deltaX = sqrt(innerRadius.pow(2) - deltaY.pow(2))
+            currentY = centerY + deltaY
+            currentX = centerX + deltaX
+            field = value
+            invalidate()
+        }
 
     @SuppressLint("ResourceAsColor")
     private fun initPaint() {
@@ -56,6 +77,34 @@ class TemperatureEditorView(
         initPaintProgress()
         initPaintBackgroundCenter()
         initPaintSlider()
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        if (event!!.action == MotionEvent.ACTION_MOVE) {
+            /*if (currentX <= event!!.x && event.x <= currentX + heightSlider) {
+                if ((currentY <= event!!.y && event.y <= currentY + heightSlider)) {
+                    progress += 30f
+                }
+            }*/
+            val field = sqrt((event.x - centerX).pow(2) + (event.y - centerY).pow(2))
+            if (field >= progressRadius - widthProgress && field <= progressRadius) {
+                updateProgress(event.x, event.y)
+            }
+        }
+        return true
+    }
+
+    private fun updateProgress(x: Float, y: Float) {
+        val deltaY = y - centerY
+        val angle = (asin(deltaY / (progressRadius - widthProgress)) * 180 / Math.PI) % 360
+
+        if (!angle.isNaN()) {
+            progress = if (x >= centerX && y >= centerY) angle.toFloat()
+            else if (x <= centerX && y >= centerY) -angle.toFloat() + 180f
+            else if (x <= centerX && y <= centerY) -angle.toFloat() + 180f
+            else angle.toFloat() + 360f
+
+        }
     }
 
     private fun initPaintProgress() {
@@ -112,13 +161,11 @@ class TemperatureEditorView(
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        progress++
         canvas!!.drawCircle(centerX, centerY, progressRadius, paintBackground)
         canvas.drawCircle(centerX, centerY, innerRadius, paintBackgroundCenter)
         canvas.drawArc(reactProgress, 0f, progress % 360, false, paintProgress)
         canvas.drawArc(reactProgress, progress % 360, widthSlider, false, paintSlider)
 
-        invalidate()
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -153,6 +200,7 @@ class TemperatureEditorView(
         }
 
         initPaint()
+        progress = 10f
     }
 
     @SuppressLint("CustomViewStyleable")
