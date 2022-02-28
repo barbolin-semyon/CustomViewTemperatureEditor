@@ -4,12 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import android.widget.Toast
-import java.lang.Math.abs
-import java.lang.Math.sin
 import kotlin.math.asin
 import kotlin.math.pow
 import kotlin.math.sin
@@ -35,6 +31,8 @@ class TemperatureEditorView(
     private lateinit var paintBackgroundCenter: Paint
     private lateinit var paintProgress: Paint
     private lateinit var paintSlider: Paint
+    private lateinit var paintTextNumberTemperature: Paint
+    private lateinit var paintTextTemperature: Paint
 
     private var outerRadius = 0f
     private var progressRadius = 0f
@@ -55,37 +53,22 @@ class TemperatureEditorView(
     private var colorProgressEnd = DEFAULT_COLOR_PROGRESS_END
     private var colorSlider = DEFAULT_COLOR_SLIDER
 
-
-    private var currentY = 0f
-    private var currentX = 0f
-    private var progress = 0f
+    var temperature: Float = 10.0f
         set(value) {
+            if (temperature in 10.0..35.0) {
+                field = value
+            }
+        }
 
-            val deltaY = sin(progress) * innerRadius
-            val deltaX = sqrt(innerRadius.pow(2) - deltaY.pow(2))
-            currentY = centerY + deltaY
-            currentX = centerX + deltaX
+    private var currentAngle = 0f
+        set(value) {
             field = value
+            temperature = (value / 360) * 25 + 10
             invalidate()
         }
 
-    @SuppressLint("ResourceAsColor")
-    private fun initPaint() {
-        paintBackground = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = colorBackgroundCircle
-        }
-        initPaintProgress()
-        initPaintBackgroundCenter()
-        initPaintSlider()
-    }
-
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if (event!!.action == MotionEvent.ACTION_MOVE) {
-            /*if (currentX <= event!!.x && event.x <= currentX + heightSlider) {
-                if ((currentY <= event!!.y && event.y <= currentY + heightSlider)) {
-                    progress += 30f
-                }
-            }*/
             val field = sqrt((event.x - centerX).pow(2) + (event.y - centerY).pow(2))
             if (field >= progressRadius - widthProgress && field <= progressRadius) {
                 updateProgress(event.x, event.y)
@@ -99,11 +82,42 @@ class TemperatureEditorView(
         val angle = (asin(deltaY / (progressRadius - widthProgress)) * 180 / Math.PI) % 360
 
         if (!angle.isNaN()) {
-            progress = if (x >= centerX && y >= centerY) angle.toFloat()
+            currentAngle = if (x >= centerX && y >= centerY) angle.toFloat()
             else if (x <= centerX && y >= centerY) -angle.toFloat() + 180f
             else if (x <= centerX && y <= centerY) -angle.toFloat() + 180f
             else angle.toFloat() + 360f
 
+        }
+    }
+
+    @SuppressLint("ResourceAsColor")
+    private fun initPaint() {
+        initPaintBackground()
+        initPaintProgress()
+        initPaintBackgroundCenter()
+        initPaintSlider()
+        initPaintTextNumberTemperature()
+        initPaintTextTemperature()
+    }
+
+    private fun initPaintTextNumberTemperature() {
+        paintTextNumberTemperature = Paint().apply {
+            textSize = outerRadius / 5
+            isFakeBoldText = true
+            color = Color.WHITE
+        }
+    }
+
+    private fun initPaintTextTemperature() {
+        paintTextTemperature = Paint().apply {
+            textSize = outerRadius / 15
+            color = Color.GRAY
+        }
+    }
+
+    private fun initPaintBackground() {
+        paintBackground = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = colorBackgroundCircle
         }
     }
 
@@ -163,9 +177,23 @@ class TemperatureEditorView(
         super.onDraw(canvas)
         canvas!!.drawCircle(centerX, centerY, progressRadius, paintBackground)
         canvas.drawCircle(centerX, centerY, innerRadius, paintBackgroundCenter)
-        canvas.drawArc(reactProgress, 0f, progress % 360, false, paintProgress)
-        canvas.drawArc(reactProgress, progress % 360, widthSlider, false, paintSlider)
+        canvas.drawArc(reactProgress, 0f, currentAngle % 360, false, paintProgress)
+        canvas.drawArc(reactProgress, currentAngle % 360, widthSlider, false, paintSlider)
 
+        val temperatureString = String.format("%.1f", temperature)
+
+        canvas.drawText(
+            temperatureString,
+            centerX - paintTextNumberTemperature.measureText(temperatureString) / 2,
+            centerY,
+            paintTextNumberTemperature
+        )
+        canvas.drawText(
+            "температура",
+            centerX - paintTextTemperature.measureText("температура") / 2,
+                centerY + paintTextTemperature.textSize * 1.3f,
+                paintTextTemperature
+            )
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -200,7 +228,7 @@ class TemperatureEditorView(
         }
 
         initPaint()
-        progress = 10f
+        currentAngle = 10f
     }
 
     @SuppressLint("CustomViewStyleable")
